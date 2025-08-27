@@ -28,8 +28,8 @@ int main(void)
         // float b = (float)y / (float)SSD1306_HEIGHT;
         // b *= 255.0f;
         int r_i = (int)r;
-        int g = 100;
-        int b_i = (int)100;
+        int g = 20;
+        int b_i = (int)50;
         put_txt_pixel(x, y, r_i, g, b_i);
     }
     display();

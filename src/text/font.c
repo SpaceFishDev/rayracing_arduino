@@ -167,7 +167,7 @@ void lcd_putc(char c, int x, int y)
 
 void put_txt_pixel(int x, int y, int r, int g, int b)
 {
-    const char *mappings = "[]}{)(|/XUQ0X$B&8MW%#@";
+    const char *mappings = " .:;![]}{XUQ0X$B&8MW%#@";
     float brightness = r + g + b;
     brightness /= 3;
 
