@@ -23,11 +23,13 @@ int main(void)
         {
             x += 4;
         }
-        float r = (float)x / 128.0f;
+        float r = (float)x / (float)SSD1306_WIDTH;
         r *= 255.0f;
+        // float b = (float)y / (float)SSD1306_HEIGHT;
+        // b *= 255.0f;
         int r_i = (int)r;
         int g = 100;
-        int b_i = (int)r;
+        int b_i = (int)100;
         put_txt_pixel(x, y, r_i, g, b_i);
     }
     display();

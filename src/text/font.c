@@ -164,72 +164,20 @@ void lcd_putc(char c, int x, int y)
         }
     }
 }
-uint8_t mappings[32];
-int generated = 0;
-
-int count_filled_pixels(uint8_t c)
-{
-    uint8_t bitmap[3];
-    for (int i = 0; i < 3; i++)
-        bitmap[i] = pgm_read_byte(&font[c][i]);
-
-    int count = 0;
-    for (int row = 0; row < 6; row++)
-    {
-        int byte_index = row / 2;
-        uint8_t b = bitmap[byte_index];
-        uint8_t nibble = (row % 2 == 0) ? (b >> 4) : (b & 0x0F);
-
-        for (int col = 0; col < 4; col++)
-            count += (nibble >> col) & 1;
-    }
-    return count;
-}
-
-int cmp_chars(const void *a, const void *b)
-{
-    uint8_t ca = *(const uint8_t *)a;
-    uint8_t cb = *(const uint8_t *)b;
-
-    return count_filled_pixels(ca) - count_filled_pixels(cb);
-}
-
-void generate_mappings()
-{
-    uint8_t chars[128];
-    for (int i = 0; i < 128; i++)
-    {
-        chars[i] = i;
-    }
-
-    qsort(chars, 128, sizeof(uint8_t), cmp_chars);
-
-    int step = 127 / (32 - 1);
-    for (int i = 0; i < 32; i++)
-    {
-        mappings[i] = chars[i * step];
-    }
-    generated = 1;
-}
 
 void put_txt_pixel(int x, int y, int r, int g, int b)
 {
-    if (!generated)
-    {
-        generate_mappings();
-    }
+    const char *mappings = "[]}{)(|/XUQ0X$B&8MW%#@";
+    float brightness = r + g + b;
+    brightness /= 3;
 
-    float brightness = (r + g + b) / 3.0f;
     brightness /= 255.0f;
 
-    int index = (int)(brightness * (32 - 1));
+    int index = (int)(brightness * (strlen(mappings) - 1));
+
     if (index < 0)
     {
         index = 0;
-    }
-    if (index > 31)
-    {
-        index = 31;
     }
 
     lcd_putc(mappings[index], x, y);
