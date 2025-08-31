@@ -72,6 +72,10 @@ static inline vector3 operator/(const vector3 &u, double t)
 {
     return vector3(u.x / t, u.y / t, u.z / t);
 }
+static inline vector3 operator+(vector3 &u, double t)
+{
+    return vector3(u.x + t, u.y + t, u.z + t);
+}
 static inline double dot(const vector3 &u, const vector3 &v)
 {
     return u.x * v.x + u.y * v.y + u.z * v.z;

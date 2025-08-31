@@ -12,9 +12,9 @@
 vector3 ray_color(ray &r, hittable &world)
 {
     hit_record rec;
-    if (world.hit(r, 0, INFINITY, rec))
+    if (world.hit(r, 0, INFINITY, &rec))
     {
-        return (rec.normal * vector3(1, 1, 1)) * 0.5;
+        return vector3(0.2, 1, 1);
     }
     vector3 unit_direction = unit_vector(r.direction);
     double a = 0.5 * (unit_direction.y + 1.0);
@@ -28,7 +28,7 @@ int main(void)
                  &PORTB, &DDRB, PB1);
 
     sort_mappings();
-    double aspect_ratio = (double)(SSD1306_WIDTH / 8) / ((double)SSD1306_HEIGHT / 6);
+    double aspect_ratio = (double)(SSD1306_WIDTH / 8.0) / ((double)SSD1306_HEIGHT / 6.0);
     double focal_length = 1.0;
     double viewport_height = 2.0;
     double viewport_width = viewport_height * aspect_ratio;
@@ -45,7 +45,9 @@ int main(void)
 
     hittable_list world;
     sphere a = sphere(vector3(0, 0, -1), 0.5);
+    sphere b = sphere(vector3(0, -100.5, -1), 100);
     world.add(&a);
+    // world.add(&b);
     for (int y = 0; y < SSD1306_HEIGHT / 6; y++)
     {
         for (int x = 0; x < SSD1306_WIDTH / 8; x++)
