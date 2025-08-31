@@ -6,7 +6,7 @@ PORT = /dev/ttyUSB0
 BAUD = 9600
 
 SRC_DIR = src
-SRC_C = $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/*/*.c)
+SRC_C = $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/*/*.c) $(wildcard $(SRC_DIR)/*/*.cpp) $(wildcard $(SRC_DIR)/*.cpp)
 SRC_ASM = $(wildcard $(SRC_DIR)/*.s) $(wildcard $(SRC_DIR)/*/*.s)
 
 OBJ_C = $(SRC_C:.c=.o)
@@ -20,19 +20,15 @@ CFLAGS = -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os
 
 all: $(HEX)
 
-# Compile C files
 %.o: %.c
-	avr-gcc $(CFLAGS) -c $< -o $@
+	avr-g++ $(CFLAGS) -c $< -o $@
 
-# Compile assembly files
 %.o: %.s
-	avr-gcc $(CFLAGS) -c $< -o $@
+	avr-g++ $(CFLAGS) -c $< -o $@
 
-# Link all objects
 $(ELF): $(OBJ_C) $(OBJ_ASM)
 	avr-gcc $(CFLAGS) -o $(ELF) $(OBJ_C) $(OBJ_ASM)
 
-# Create HEX file
 $(HEX): $(ELF)
 	avr-objcopy -O ihex -R .eeprom $(ELF) $(HEX)
 

@@ -2,6 +2,8 @@
 #include <avr/pgmspace.h>
 #include "../lcd/lcd.h"
 #include <string.h>
+#include <util/delay.h>
+#include <stdlib.h>
 
 const uint8_t font[128][3] PROGMEM = {
     {0x00, 0x00, 0x00}, // U+0000 (null)
@@ -164,16 +166,93 @@ void lcd_putc(char c, int x, int y)
         }
     }
 }
+int countch(char c)
+{
+    int count = 0;
+    uint8_t bitmap[3];
+    for (int i = 0; i < 3; i++)
+    {
+        bitmap[i] = pgm_read_byte(&font[(uint8_t)c][i]);
+    }
+
+    for (int row = 0; row < 6; ++row)
+    {
+        int byte_index = row / 2;
+        uint8_t b = bitmap[byte_index];
+
+        uint8_t nibble;
+        if ((row % 2) == 0)
+        {
+            nibble = (b >> 4);
+        }
+        else
+        {
+            nibble = (b & 0x0F);
+        }
+
+        for (int col = 0; col < 4; ++col)
+        {
+            int set = (nibble >> col) & 1;
+            count += set > 0;
+        }
+    }
+    return count;
+}
+
+int sorted = 0;
+char all_mappings[128];
+int compare_chars(const void *a, const void *b)
+{
+    char ca = *(const char *)a;
+    char cb = *(const char *)b;
+
+    int count_a = countch(ca);
+    int count_b = countch(cb);
+
+    if (count_a < count_b)
+    {
+        return -1;
+    }
+    if (count_a > count_b)
+    {
+        return 1;
+    }
+
+    return (int)cb - (int)ca;
+}
+char mappings[64];
+int sort_mappings()
+{
+    for (int i = 0; i < 128; ++i)
+    {
+        all_mappings[i] = (char)i;
+    }
+    qsort(all_mappings, 128, 1, compare_chars);
+    for (int i = 0; i < 48; i += 1)
+    {
+        mappings[i] = all_mappings[i];
+    }
+    int n = 48;
+    for (int i = 112; i < 128; ++i)
+    {
+        mappings[n] = all_mappings[i];
+        ++n;
+    }
+    sorted = 1;
+}
 
 void put_txt_pixel(int x, int y, int r, int g, int b)
 {
-    const char *mappings = " .:;![]}{XUQ0X$B&8MW%#@";
+    if (!sorted)
+    {
+        sort_mappings();
+    }
     float brightness = r + g + b;
     brightness /= 3;
 
     brightness /= 255.0f;
 
-    int index = (int)(brightness * (strlen(mappings) - 1));
+    int index = (int)(brightness * (64 - 1));
 
     if (index < 0)
     {
@@ -181,4 +260,5 @@ void put_txt_pixel(int x, int y, int r, int g, int b)
     }
 
     lcd_putc(mappings[index], x, y);
+    lcd_putc(mappings[index], x + 4, y);
 }
