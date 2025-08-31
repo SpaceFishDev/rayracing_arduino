@@ -16,7 +16,7 @@ TARGET = main
 ELF = $(TARGET).elf
 HEX = $(TARGET).hex
 
-CFLAGS = -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os
+CFLAGS = -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -fpermissive -std=gnu++11
 
 all: $(HEX)
 
@@ -27,7 +27,7 @@ all: $(HEX)
 	avr-g++ $(CFLAGS) -c $< -o $@
 
 $(ELF): $(OBJ_C) $(OBJ_ASM)
-	avr-gcc $(CFLAGS) -o $(ELF) $(OBJ_C) $(OBJ_ASM)
+	avr-g++ $(CFLAGS) -o $(ELF) $(OBJ_C) $(OBJ_ASM)
 
 $(HEX): $(ELF)
 	avr-objcopy -O ihex -R .eeprom $(ELF) $(HEX)

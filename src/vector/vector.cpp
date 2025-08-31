@@ -1,6 +1,6 @@
 #include "vector.h"
 
-uint8_t memory[512];
+uint8_t memory[640];
 int mem_idx = 0;
 void *get_mem(uint32_t size)
 {
@@ -9,5 +9,5 @@ void *get_mem(uint32_t size)
         return (void *)-1;
     }
     mem_idx += size;
-    return (void *)memory[mem_idx - size];
+    return (void *)&memory[mem_idx - size];
 }

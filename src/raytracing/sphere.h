@@ -2,13 +2,19 @@
 #define SPHERE_H
 #include "hittable.h"
 
-class sphere : hittable
+#include "../lcd/lcd.h"
+#include "../text/font.h"
+#include <util/delay.h>
+
+class sphere : public hittable
 {
 public:
     vector3 center;
     double radius;
-    sphere(vector3 center, double radius) : center(center), radius(fmax(0, radius)) {}
-    bool hit(ray r, double ray_tmin, double ray_tmax, hit_record &rec)
+    sphere(vector3 center, double radius) : center(center), radius(fmax(0, radius))
+    {
+    }
+    bool hit(ray r, double ray_tmin, double ray_tmax, hit_record &rec) const override
     {
         vector3 oc = center - r.origin;
         double a = r.direction.length_squared();

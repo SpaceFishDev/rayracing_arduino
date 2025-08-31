@@ -1,6 +1,8 @@
 #ifndef HIT_RECORD_H
 #define HIT_RECORD_H
 #include "../math/ray.h"
+#include "../vector/vector.h"
+#include "../text/font.h"
 
 class hit_record
 {
@@ -20,13 +22,47 @@ public:
 class hittable
 {
 public:
-    virtual ~hittable() = default;
     virtual bool hit(ray r, double ray_tmin, double ray_tmax, hit_record &rec) const = 0;
 };
 
-class hittable_list
+class hittable_list : public hittable
 {
 public:
+    vector<hittable *> objects;
+    ~hittable_list()
+    {
+        this->clear();
+    }
+    hittable_list()
+    {
+
+        objects = vector<hittable *>();
+    }
+    void clear()
+    {
+        objects.clear();
+    }
+    void add(hittable *o)
+    {
+        objects.add(o);
+    }
+    bool hit(ray r, double ray_tmin, double ray_tmax, hit_record &rec) const override
+    {
+        hit_record temp_rec;
+        bool hit_anything = false;
+        double closest_so_far = ray_tmax;
+        for (int i = 0; i < objects.num; ++i)
+        {
+            hittable *object = (hittable *)objects.get(i);
+            if (object->hit(r, ray_tmin, closest_so_far, temp_rec))
+            {
+                hit_anything = true;
+                closest_so_far = temp_rec.t;
+                rec = temp_rec;
+            }
+        }
+        return hit_anything;
+    }
 };
 
 #endif
