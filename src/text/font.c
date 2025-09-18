@@ -228,12 +228,12 @@ int sort_mappings()
         all_mappings[i] = (char)i;
     }
     qsort(all_mappings, 128, 1, compare_chars);
-    for (int i = 0; i < 48; i += 1)
+    for (int i = 0; i < 40; i += 1)
     {
         mappings[i] = all_mappings[i];
     }
-    int n = 48;
-    for (int i = 112; i < 128; ++i)
+    int n = 40;
+    for (int i = 103; i < 128; ++i)
     {
         mappings[n] = all_mappings[i];
         ++n;

@@ -4,6 +4,7 @@
         "stdint.h": "c",
         "ssd1306.h": "c",
         "font_renderer.h": "c",
-        "pgmspace.h": "c"
+        "pgmspace.h": "c",
+        "text_pixels.h": "c"
     }
 }

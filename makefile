@@ -6,7 +6,7 @@ PORT = /dev/ttyUSB0
 BAUD = 9600
 
 SRC_DIR = src
-SRC_C = $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/*/*.c) $(wildcard $(SRC_DIR)/*/*.cpp) $(wildcard $(SRC_DIR)/*.cpp)
+SRC_C = $(wildcard $(SRC_DIR)/*.c) $(wildcard $(SRC_DIR)/*/*.c)  
 SRC_ASM = $(wildcard $(SRC_DIR)/*.s) $(wildcard $(SRC_DIR)/*/*.s)
 
 OBJ_C = $(SRC_C:.c=.o)
@@ -16,18 +16,18 @@ TARGET = main
 ELF = $(TARGET).elf
 HEX = $(TARGET).hex
 
-CFLAGS = -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -fpermissive -std=gnu++11
+CFLAGS = -mmcu=$(MCU) -DF_CPU=$(F_CPU) -Os -fpermissive 
 
 all: $(HEX)
 
 %.o: %.c
-	avr-g++ $(CFLAGS) -c $< -o $@
+	avr-gcc $(CFLAGS) -c $< -o $@
 
 %.o: %.s
-	avr-g++ $(CFLAGS) -c $< -o $@
+	avr-gcc $(CFLAGS) -c $< -o $@
 
 $(ELF): $(OBJ_C) $(OBJ_ASM)
-	avr-g++ $(CFLAGS) -o $(ELF) $(OBJ_C) $(OBJ_ASM)
+	avr-gcc $(CFLAGS) -o $(ELF) $(OBJ_C) $(OBJ_ASM)
 
 $(HEX): $(ELF)
 	avr-objcopy -O ihex -R .eeprom $(ELF) $(HEX)
